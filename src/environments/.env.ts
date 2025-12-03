@@ -2,8 +2,9 @@
 /* tslint:disable */
 export default {
   'mifos_x': {
-    'version': '250828',
-    'hash': 'b92f79e2'
-  }
+    'version': '251203',
+    'hash': '5ad3085c'
+  },
+  'allow_switching_backend_instance': true
 };
 /* tslint:enable */
