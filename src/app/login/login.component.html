@@ -1,42 +1,59 @@
 <main class="login-page">
     <div class="pattern-dots pattern-dots--top-right" aria-hidden="true"></div>
-    <div
-        class="pattern-dots pattern-dots--bottom-left"
-        aria-hidden="true"
-    ></div>
+    <div class="pattern-dots pattern-dots--bottom-left" aria-hidden="true"></div>
+    
     <div class="login-card">
         <header>
             <h1>Sign in</h1>
         </header>
 
-        <form action="#" method="POST" class="login-form">
+        <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+            
             <div class="input-group">
                 <label for="user-id">User ID</label>
                 <input
                     type="text"
                     id="user-id"
-                    name="user-id"
+                    formControlName="username"
                     placeholder="Enter User ID"
-                    required
+                    [class.error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
                 />
+                <small *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" style="color: red; font-size: 12px;">
+                    {{ getErrorMessage('username') }}
+                </small>
             </div>
 
             <div class="input-group">
                 <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Password"
-                    required
-                />
+                
+                <div class="password-wrapper">
+                    <input
+                        [type]="passwordInputType"
+                        id="password"
+                        formControlName="password"
+                        placeholder="Password"
+                        [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                    />
+                    
+                    <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+                        <fa-icon [icon]="faEye" *ngIf="passwordInputType === 'password'"></fa-icon>
+                        <fa-icon [icon]="faEyeSlash" *ngIf="passwordInputType === 'text'"></fa-icon>
+                    </button>
+                </div>
+
+                <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" style="color: red; font-size: 12px;">
+                    {{ getErrorMessage('password') }}
+                </small>
             </div>
 
             <div class="form-actions">
                 <a href="#" class="forgot-link">Forgot Password?</a>
             </div>
 
-            <button type="submit" class="btn-submit" disabled>Login</button>
+            <button type="submit" class="btn-submit" [disabled]="loginForm.invalid || loading">
+                <span *ngIf="!loading">Login</span>
+                <span *ngIf="loading">Signing in...</span>
+            </button>
         </form>
     </div>
 </main>

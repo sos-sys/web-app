@@ -118,6 +118,39 @@ header h1 {
     display: flex;
     flex-direction: column;
     gap: 8px; /* Spacing between label and input */
+    
+    .password-wrapper {
+        position: relative; /* Allows us to position the button absolute inside here */
+        width: 100%;
+
+        input {
+            width: 100%;
+            padding-right: 40px; /* Make room for the eye icon so text doesn't hit it */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;        /* 10px from the right edge */
+            top: 50%;           /* Move down 50% */
+            transform: translateY(-50%); /* Pull back up 50% to perfectly center it */
+
+            z-index: 10;        /* <--- THIS IS THE MISSING LINE */
+            cursor: pointer;
+            
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #555;        /* Icon color (grey) */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+
+            &:hover {
+                color: #333;    /* Darker on hover */
+            }
+        }
+    }
 
     label {
         font-size: 14px;

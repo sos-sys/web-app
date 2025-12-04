@@ -1,117 +1,105 @@
-/** Angular Imports */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs/operators';
 
-/** rxjs Imports */
-import { Subscription } from 'rxjs';
+import { AuthenticationService } from '../core/authentication/authentication.service';
 
-/** Custom Models */
-import { Alert } from '../core/alert/alert.model';
-
-/** Custom Services */
-import { AlertService } from '../core/alert/alert.service';
-
-/** Environment Imports */
-import { environment } from '../../environments/environment';
-import { SettingsService } from 'app/settings/settings.service';
-import { LanguageSelectorComponent } from '../shared/language-selector/language-selector.component';
-import { ThemeToggleComponent } from '../shared/theme-toggle/theme-toggle.component';
-import { ServerSelectorComponent } from '../shared/server-selector/server-selector.component';
-import { TenantSelectorComponent } from '../shared/tenant-selector/tenant-selector.component';
-import { LoginFormComponent } from './login-form/login-form.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { TwoFactorAuthenticationComponent } from './two-factor-authentication/two-factor-authentication.component';
-import { MatList, MatListItem } from '@angular/material/list';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
-import { FooterComponent } from '../shared/footer/footer.component';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-/**
- * Login component.
- */
 @Component({
   selector: 'mifosx-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  standalone: true,
   imports: [
-    ...STANDALONE_SHARED_IMPORTS,
-    LanguageSelectorComponent,
-    ThemeToggleComponent,
-    ServerSelectorComponent,
-    TenantSelectorComponent,
-    LoginFormComponent,
-    ResetPasswordComponent,
-    TwoFactorAuthenticationComponent,
-    MatList,
-    MatListItem,
-    MatMenuTrigger,
-    FooterComponent,
-    FaIconComponent,
-    MatMenu,
-    MatMenuItem
+    CommonModule,         // Required for *ngIf
+    ReactiveFormsModule,   // Required for [formGroup] and formControlName
+    FaIconComponent
   ]
 })
-export class LoginComponent implements OnInit, OnDestroy {
-  public environment = environment;
+export class LoginComponent implements OnInit {
+  
+  // Variables your HTML is asking for
+  loginForm!: FormGroup;
+  passwordInputType: string = 'password';
+  loading = false;
 
-  /** True if password requires a reset. */
-  resetPassword = false;
-  /** True if user requires two factor authentication. */
-  twoFactorAuthenticationRequired = false;
-  /** Subscription to alerts. */
-  alert$: Subscription;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
 
-  /**
-   * @param {AlertService} alertService Alert Service.
-   * @param {Router} router Router for navigation.
-   */
   constructor(
-    private alertService: AlertService,
-    private settingsService: SettingsService,
+    private formBuilder: FormBuilder,
+    private authenticationService: AuthenticationService,
     private router: Router
   ) {}
 
-  /**
-   * Subscribes to alert event of alert service.
-   */
   ngOnInit() {
-    this.alert$ = this.alertService.alertEvent.subscribe((alertEvent: Alert) => {
-      const alertType = alertEvent.type;
-      if (alertType === 'Password Expired') {
-        this.twoFactorAuthenticationRequired = false;
-        this.resetPassword = true;
-      } else if (alertType === 'Two Factor Authentication Required') {
-        this.resetPassword = false;
-        this.twoFactorAuthenticationRequired = true;
-      } else if (alertType === 'Authentication Success') {
-        this.resetPassword = false;
-        this.twoFactorAuthenticationRequired = false;
-        this.router.navigate(['/'], { replaceUrl: true });
-      }
+    console.log('Icon Check:', this.faEye); // If this says "undefined", the import path is broken.
+    this.createLoginForm();
+  }
+
+  /** 
+   * 1. Initialize the form group with validators
+   */
+  private createLoginForm() {
+    this.loginForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
   /**
-   * Unsubscribes from alerts.
+   * 2. The Login Action (Triggered by (ngSubmit))
    */
-  ngOnDestroy() {
-    this.alert$.unsubscribe();
+  login() {
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+    this.loginForm.disable(); // Disable inputs while loading
+
+    this.authenticationService
+      .login(this.loginForm.value)
+      .pipe(
+        finalize(() => {
+          this.loginForm.markAsPristine();
+          this.loginForm.enable();
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          // On success, go to home dashboard
+          this.router.navigate(['/'], { replaceUrl: true });
+        },
+        error: (err) => {
+          // Optional: Handle login error here (e.g., show a toast)
+          console.error('Login failed', err);
+        }
+      });
   }
 
-  reloadSettings(): void {
-    this.settingsService.setTenantIdentifier('');
-    this.settingsService.setTenantIdentifier(environment.fineractPlatformTenantId || 'default');
-    this.settingsService.setTenantIdentifiers(environment.fineractPlatformTenantIds.split(','));
-    this.settingsService.setServers(environment.baseApiUrls.split(','));
-    window.location.reload();
+  /**
+   * 3. Helper for the "Show/Hide Password" button
+   */
+  togglePasswordVisibility() {
+    this.passwordInputType = this.passwordInputType === 'password' ? 'text' : 'password';
   }
 
-  displayTenantSelector(): boolean {
-    return environment.displayTenantSelector === 'false' ? false : true;
-  }
-
-  allowServerSwitch(): boolean {
-    return environment.allowServerSwitch === 'false' ? false : true;
+  /**
+   * 4. Helper for error messages in HTML
+   */
+  getErrorMessage(controlName: string): string {
+    const control = this.loginForm.get(controlName);
+    if (control?.hasError('required')) {
+      return 'This field is required';
+    } else if (control?.hasError('minlength')) {
+      return `Minimum length is ${control.errors?.minlength.requiredLength}`;
+    }
+    return '';
   }
 }
