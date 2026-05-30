@@ -2,41 +2,72 @@
   <h2>Client Transaction</h2>
   <p>Process a deposit or withdrawal for a client.</p>
 
-  <!-- Embed our Phase 2 Atomic Component -->
+  <!-- THE NEW SEARCH BAR -->
   <div style="margin-bottom: 20px;">
+    <label>Search Client: </label>
+    <input type="text" [formControl]="searchControl" placeholder="Type a name or account...">
+    <span *ngIf="isSearching"> ⏳ Searching...</span>
+    
+    <!-- Search Results Dropdown -->
+    <ul *ngIf="searchResults.length > 0" style="border: 1px solid black; padding: 10px; max-width: 300px; list-style-type: none;">
+      <li *ngFor="let result of searchResults" 
+          (click)="selectClient(result)" 
+          style="cursor: pointer; color: blue; text-decoration: underline; margin-bottom: 5px;">
+        {{ result.name }} ({{ result.accounts.length }} accounts)
+      </li>
+    </ul>
+  </div>
+
+  <!-- Embed Profile Card (Only visible IF a client is selected) -->
+  <div *ngIf="selectedClient" style="margin-bottom: 20px;">
+    <button (click)="selectedClient = null; selectedAccount = null" style="margin-bottom: 10px;">Clear Client</button>
     <app-client-profile-card 
-      [clientName]="mockClient.name"
-      [accountNumber]="mockClient.account"
-      [signatureUrl]="mockClient.signature">
+      [clientName]="selectedClient.name"
+      [accountNumber]="'Client ID: ' + selectedClient.id"
+      [signatureUrl]="selectedClient.signature">
     </app-client-profile-card>
   </div>
 
-  <!-- Transaction Form -->
-  <div>
+  <!-- Account Selection & Transaction Form -->
+  <div *ngIf="selectedClient">
     <h3>Transaction Details</h3>
     
-    <div>
-      <label>
-        <input type="radio" name="txType" value="DEPOSIT" [(ngModel)]="transactionType"> Deposit
-      </label>
-      <label style="margin-left: 10px;">
-        <input type="radio" name="txType" value="WITHDRAWAL" [(ngModel)]="transactionType"> Withdrawal
-      </label>
+    <!-- Account Selector -->
+    <div style="margin-bottom: 15px;">
+      <label>Select Target Account: </label>
+      <select [(ngModel)]="selectedAccount">
+        <option [ngValue]="null">-- Select an Account --</option>
+        <option *ngFor="let acc of selectedClient.accounts" [ngValue]="acc">
+          {{ acc.accountType }} ({{ acc.accountNo }})
+        </option>
+      </select>
     </div>
 
-    <div style="margin-top: 10px;">
-      <label>Amount (XAF): </label>
-      <input type="number" min="0" [(ngModel)]="transactionAmount" placeholder="Enter amount">
-    </div>
+    <!-- Only show transaction fields if an account is chosen -->
+    <div *ngIf="selectedAccount">
+      <div>
+        <label>
+          <input type="radio" name="txType" value="DEPOSIT" [(ngModel)]="transactionType"> Deposit
+        </label>
+        <label style="margin-left: 10px;">
+          <input type="radio" name="txType" value="WITHDRAWAL" [(ngModel)]="transactionType"> Withdrawal
+        </label>
+      </div>
 
-    <div style="margin-top: 20px;">
-      <p *ngIf="successMessage" style="color: green;"><strong>Success:</strong> {{ successMessage }}</p>
+      <div style="margin-top: 10px;">
+        <label>Amount (XAF): </label>
+        <input type="number" min="0" [(ngModel)]="transactionAmount" placeholder="Enter amount">
+      </div>
 
-      <button 
-        (click)="submitTransaction()" 
-        [disabled]="isLoading || transactionAmount <= 0">
-        {{ isLoading ? 'Processing...' : 'Submit ' + transactionType }}
-      </button>
+      <div style="margin-top: 20px;">
+        <p *ngIf="successMessage" style="color: green;"><strong>Success:</strong> {{ successMessage }}</p>
+
+        <button 
+          (click)="submitTransaction()" 
+          [disabled]="isLoading || transactionAmount <= 0">
+          {{ isLoading ? 'Processing...' : 'Submit ' + transactionType }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

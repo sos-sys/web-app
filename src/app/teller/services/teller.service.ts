@@ -129,4 +129,52 @@ export class TellerService {
 
     return of(mockTransactions).pipe(delay(500));
   }
+
+  /**
+   * Simulates a debounced client search hitting the BFF.
+   */
+  public searchClients(query: string): Observable<any[]> {
+    if (!query || query.trim().length === 0) {
+      return of([]);
+    }
+
+    const mockDatabase = [
+      {
+        id: 101,
+        name: 'Alice Johnson',
+        accounts: [
+          { accountNo: '001293995', accountType: 'Savings' },
+          { accountNo: '001293996', accountType: 'Daily Saving' }
+        ],
+        signature: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="50"><text x="10" y="30" font-family="cursive" font-size="24">Alice Johnson</text></svg>'
+      },
+      {
+        id: 102,
+        name: 'Bob Smith',
+        accounts: [
+          { accountNo: '008928374', accountType: 'Savings' }
+        ],
+        signature: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="50"><text x="10" y="30" font-family="cursive" font-size="24">Bob Smith</text></svg>'
+      },
+      {
+        id: 103,
+        name: 'Charlie Davis',
+        accounts: [
+          { accountNo: '004455667', accountType: 'Savings' },
+          { accountNo: '004455668', accountType: 'Njangi' },
+          { accountNo: '004455669', accountType: 'Loan Repayment' }
+        ],
+        signature: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="50"><text x="10" y="30" font-family="cursive" font-size="24">Charlie Davis</text></svg>'
+      }
+    ];
+
+    const lowerQuery = query.toLowerCase();
+    const results = mockDatabase.filter(c => 
+      c.name.toLowerCase().includes(lowerQuery) || 
+      c.id.toString().includes(lowerQuery) ||
+      c.accounts.some(acc => acc.accountNo.includes(lowerQuery))
+    );
+
+    return of(results).pipe(delay(300));
+  }
 }
