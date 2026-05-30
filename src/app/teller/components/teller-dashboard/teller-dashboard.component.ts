@@ -43,4 +43,9 @@ export class TellerDashboardComponent implements OnInit, OnDestroy {
       this.sub.unsubscribe();
     }
   }
+
+  public logout(): void {
+    this.tellerService.logout();
+    this.router.navigate(['/teller/auth']);
+  }
 }

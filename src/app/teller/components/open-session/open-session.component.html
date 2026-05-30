@@ -8,10 +8,10 @@
     (totalChanged)="onTotalChanged($event)">
   </app-denomination-counter>
 
-  <div style="margin-top: 20px;">
+  <div >
     <!-- Loading and Error UI States -->
-    <p *ngIf="errorMessage" style="color: red;"><strong>Error:</strong> {{ errorMessage }}</p>
-    <p *ngIf="successMessage" style="color: green;"><strong>Success:</strong> {{ successMessage }}</p>
+    <p *ngIf="errorMessage" ><strong>Error:</strong> {{ errorMessage }}</p>
+    <p *ngIf="successMessage" ><strong>Success:</strong> {{ successMessage }}</p>
     
     <button 
       (click)="openSession()" 

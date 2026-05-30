@@ -6,11 +6,11 @@
     <p>Loading journal data...</p>
   </div>
 
-  <div *ngIf="errorMessage" style="color: red;">
+  <div *ngIf="errorMessage" >
     <p><strong>Error:</strong> {{ errorMessage }}</p>
   </div>
 
-  <table *ngIf="!isLoading && !errorMessage" border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
+  <table *ngIf="!isLoading && !errorMessage" border="1" cellpadding="8" >
     <thead>
       <tr>
         <th>ID</th>
@@ -23,7 +23,7 @@
     </thead>
     <tbody>
       <tr *ngIf="transactions.length === 0">
-        <td colspan="6" style="text-align: center;">No transactions found for this session.</td>
+        <td colspan="6" >No transactions found for this session.</td>
       </tr>
       <tr *ngFor="let tx of transactions">
         <td>{{ tx.id }}</td>

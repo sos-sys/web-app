@@ -3,24 +3,24 @@
   <p>Process a deposit or withdrawal for a client.</p>
 
   <!-- THE NEW SEARCH BAR -->
-  <div style="margin-bottom: 20px;">
+  <div >
     <label>Search Client: </label>
     <input type="text" [formControl]="searchControl" placeholder="Type a name or account...">
     <span *ngIf="isSearching"> ⏳ Searching...</span>
     
     <!-- Search Results Dropdown -->
-    <ul *ngIf="searchResults.length > 0" style="border: 1px solid black; padding: 10px; max-width: 300px; list-style-type: none;">
+    <ul *ngIf="searchResults.length > 0" >
       <li *ngFor="let result of searchResults" 
           (click)="selectClient(result)" 
-          style="cursor: pointer; color: blue; text-decoration: underline; margin-bottom: 5px;">
+          >
         {{ result.name }} ({{ result.accounts.length }} accounts)
       </li>
     </ul>
   </div>
 
   <!-- Embed Profile Card (Only visible IF a client is selected) -->
-  <div *ngIf="selectedClient" style="margin-bottom: 20px;">
-    <button (click)="selectedClient = null; selectedAccount = null" style="margin-bottom: 10px;">Clear Client</button>
+  <div *ngIf="selectedClient" >
+    <button (click)="selectedClient = null; selectedAccount = null" >Clear Client</button>
     <app-client-profile-card 
       [clientName]="selectedClient.name"
       [accountNumber]="'Client ID: ' + selectedClient.id"
@@ -33,7 +33,7 @@
     <h3>Transaction Details</h3>
     
     <!-- Account Selector -->
-    <div style="margin-bottom: 15px;">
+    <div >
       <label>Select Target Account: </label>
       <select [(ngModel)]="selectedAccount">
         <option [ngValue]="null">-- Select an Account --</option>
@@ -49,18 +49,18 @@
         <label>
           <input type="radio" name="txType" value="DEPOSIT" [(ngModel)]="transactionType"> Deposit
         </label>
-        <label style="margin-left: 10px;">
+        <label >
           <input type="radio" name="txType" value="WITHDRAWAL" [(ngModel)]="transactionType"> Withdrawal
         </label>
       </div>
 
-      <div style="margin-top: 10px;">
+      <div >
         <label>Amount (XAF): </label>
         <input type="number" min="0" [(ngModel)]="transactionAmount" placeholder="Enter amount">
       </div>
 
-      <div style="margin-top: 20px;">
-        <p *ngIf="successMessage" style="color: green;"><strong>Success:</strong> {{ successMessage }}</p>
+      <div >
+        <p *ngIf="successMessage" ><strong>Success:</strong> {{ successMessage }}</p>
 
         <button 
           (click)="submitTransaction()" 

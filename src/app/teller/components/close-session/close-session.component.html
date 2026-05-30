@@ -9,8 +9,8 @@
       (totalChanged)="onTotalChanged($event)">
     </app-denomination-counter>
 
-    <div style="margin-top: 20px;">
-      <p *ngIf="errorMessage" style="color: red;"><strong>Error:</strong> {{ errorMessage }}</p>
+    <div >
+      <p *ngIf="errorMessage" ><strong>Error:</strong> {{ errorMessage }}</p>
       
       <button 
         (click)="closeSession()" 
@@ -21,18 +21,18 @@
   </div>
 
   <!-- Reconciliation Results View -->
-  <div *ngIf="settlementResult" style="margin-top: 20px; padding: 10px; border: 1px solid black;">
+  <div *ngIf="settlementResult" >
     <h3>Session Closed</h3>
     <p><strong>Expected Fineract Balance:</strong> {{ settlementResult.expectedBalance }} XAF</p>
     <p><strong>Actual Physical Balance:</strong> {{ settlementResult.actualBalance }} XAF</p>
     
-    <p *ngIf="settlementResult.discrepancy === 0" style="color: green;">
+    <p *ngIf="settlementResult.discrepancy === 0" >
       <strong>Status:</strong> Perfect Match!
     </p>
-    <p *ngIf="settlementResult.discrepancy > 0" style="color: blue;">
+    <p *ngIf="settlementResult.discrepancy > 0" >
       <strong>Status:</strong> Overage of {{ settlementResult.discrepancy }} XAF
     </p>
-    <p *ngIf="settlementResult.discrepancy < 0" style="color: red;">
+    <p *ngIf="settlementResult.discrepancy < 0" >
       <strong>Status:</strong> Shortage of {{ settlementResult.discrepancy * -1 }} XAF
     </p>
   </div>

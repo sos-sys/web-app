@@ -10,22 +10,22 @@
     </app-denomination-counter>
   </div>
 
-  <div style="margin-top: 20px;">
+  <div >
     <app-denomination-counter 
       title="Cash GIVEN to Client (Cash Out)"
       (totalChanged)="onCashOutChanged($event)">
     </app-denomination-counter>
   </div>
 
-  <div style="margin-top: 20px;">
+  <div >
     <h3>Validation Status</h3>
     <p><strong>Cash In:</strong> {{ cashInTotal }} XAF</p>
     <p><strong>Cash Out:</strong> {{ cashOutTotal }} XAF</p>
-    <p [style.color]="netDifference === 0 ? 'green' : 'red'">
+    <p >
       <strong>Net Difference:</strong> {{ netDifference }} XAF
     </p>
 
-    <p *ngIf="successMessage" style="color: green;"><strong>Success:</strong> {{ successMessage }}</p>
+    <p *ngIf="successMessage" ><strong>Success:</strong> {{ successMessage }}</p>
 
     <button 
       (click)="submitExchange()" 

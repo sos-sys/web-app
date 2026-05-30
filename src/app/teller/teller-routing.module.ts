@@ -6,12 +6,16 @@ import { ClientTransactionComponent } from './components/client-transaction/clie
 import { CurrencyExchangeComponent } from './components/currency-exchange/currency-exchange.component';
 import { DailyJournalComponent } from './components/daily-journal/daily-journal.component';
 import { CloseSessionComponent } from './components/close-session/close-session.component';
+import { AuthComponent } from './components/auth/auth.component';
 import { tellerGuard } from './guards/teller.guard';
+import { tellerAuthGuard } from './guards/teller-auth.guard';
 
 const routes: Routes = [
+  { path: 'auth', component: AuthComponent },
   { 
     path: '', 
     component: TellerDashboardComponent,
+    canActivate: [tellerAuthGuard],
     children: [
       { path: 'open', component: OpenSessionComponent },
       { 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { delay, switchMap } from 'rxjs/operators';
+import { delay, switchMap, tap } from 'rxjs/operators';
 import { TellerSession, TellerTransaction } from '../models/teller.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -8,6 +8,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   providedIn: 'root'
 })
 export class TellerService {
+
+  // The single source of truth for teller authentication
+  private authenticatedUserSubject = new BehaviorSubject<any | null>(null);
+  public readonly authenticatedUser$ = this.authenticatedUserSubject.asObservable();
 
   // The single source of truth for the active teller session
   private activeTellerSubject = new BehaviorSubject<TellerSession | null>(null);
@@ -18,10 +22,21 @@ export class TellerService {
   private readonly STORAGE_KEY = 'mifos_teller_session';
 
   constructor() {
-    const cached = sessionStorage.getItem(this.STORAGE_KEY);
-    if (cached) {
+    // Hydrate Authentication State
+    const cachedAuth = sessionStorage.getItem('mifos_teller_auth');
+    if (cachedAuth) {
       try {
-        this.activeTellerSubject.next(JSON.parse(cached));
+        this.authenticatedUserSubject.next(JSON.parse(cachedAuth));
+      } catch (e) {
+        console.error('Failed to parse cached auth', e);
+      }
+    }
+
+    // Hydrate Session State
+    const cachedSession = sessionStorage.getItem(this.STORAGE_KEY);
+    if (cachedSession) {
+      try {
+        this.activeTellerSubject.next(JSON.parse(cachedSession));
       } catch (e) {
         console.error('Failed to parse cached teller session', e);
       }
@@ -34,6 +49,33 @@ export class TellerService {
    */
   public getSession(): TellerSession | null {
     return this.activeTellerSubject.getValue();
+  }
+
+  public getAuthUser(): any | null {
+    return this.authenticatedUserSubject.getValue();
+  }
+
+  /**
+   * Simulates a teller authentication login.
+   */
+  public login(pin: string): Observable<boolean> {
+    return of(true).pipe(
+      delay(800),
+      tap(() => {
+        const user = { username: 'cashier_01', branch: 'Main Branch' };
+        sessionStorage.setItem('mifos_teller_auth', JSON.stringify(user));
+        this.authenticatedUserSubject.next(user);
+      })
+    );
+  }
+
+  /**
+   * Simulates a teller authentication logout.
+   */
+  public logout(): void {
+    sessionStorage.removeItem('mifos_teller_auth');
+    this.authenticatedUserSubject.next(null);
+    this.clearSession(); // Automatically lock the till if they log out
   }
 
   /**

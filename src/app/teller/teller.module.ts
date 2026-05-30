@@ -12,6 +12,7 @@ import { ClientTransactionComponent } from './components/client-transaction/clie
 import { DailyJournalComponent } from './components/daily-journal/daily-journal.component';
 import { CloseSessionComponent } from './components/close-session/close-session.component';
 import { TellerDashboardComponent } from './components/teller-dashboard/teller-dashboard.component';
+import { AuthComponent } from './components/auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { TellerDashboardComponent } from './components/teller-dashboard/teller-d
     ClientTransactionComponent,
     DailyJournalComponent,
     CloseSessionComponent,
-    TellerDashboardComponent
+    TellerDashboardComponent,
+    AuthComponent
   ],
   imports: [
     CommonModule,

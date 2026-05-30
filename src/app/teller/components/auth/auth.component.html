@@ -1,0 +1,25 @@
+<div >
+  <h2>Teller Login</h2>
+  <p>Please enter your Cashier PIN to authenticate.</p>
+
+  <div >
+    <label>Cashier PIN: </label><br/>
+    <input 
+      type="password" 
+      [(ngModel)]="pin" 
+      placeholder="Enter PIN (e.g. 1234)" 
+      
+      (keyup.enter)="doLogin()">
+  </div>
+
+  <div >
+    <p *ngIf="errorMessage" ><strong>Error:</strong> {{ errorMessage }}</p>
+    
+    <button 
+      (click)="doLogin()" 
+      [disabled]="isLoading || !pin"
+      >
+      {{ isLoading ? 'Authenticating...' : 'Login' }}
+    </button>
+  </div>
+</div>
