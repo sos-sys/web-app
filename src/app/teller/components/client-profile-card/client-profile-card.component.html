@@ -1,0 +1,10 @@
+<div>
+  <h4>Client Profile</h4>
+  <p><strong>Name:</strong> {{ clientName || 'N/A' }}</p>
+  <p><strong>Account:</strong> {{ accountNumber || 'N/A' }}</p>
+  
+  <div *ngIf="signatureUrl">
+    <p><strong>Signature:</strong></p>
+    <img [src]="signatureUrl" alt="Client Signature" width="200" />
+  </div>
+</div>

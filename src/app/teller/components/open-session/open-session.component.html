@@ -1,0 +1,22 @@
+<div>
+  <h2>Open Cashier Session</h2>
+  <p>Count your physical cash drawer to establish the opening float.</p>
+
+  <!-- Embed our Phase 2 Atomic Component -->
+  <app-denomination-counter 
+    title="Opening Float Breakdown"
+    (totalChanged)="onTotalChanged($event)">
+  </app-denomination-counter>
+
+  <div style="margin-top: 20px;">
+    <!-- Loading and Error UI States -->
+    <p *ngIf="errorMessage" style="color: red;"><strong>Error:</strong> {{ errorMessage }}</p>
+    <p *ngIf="successMessage" style="color: green;"><strong>Success:</strong> {{ successMessage }}</p>
+    
+    <button 
+      (click)="openSession()" 
+      [disabled]="isLoading || currentTotal <= 0">
+      {{ isLoading ? 'Allocating Cash...' : 'Open Session (' + currentTotal + ' XAF)' }}
+    </button>
+  </div>
+</div>

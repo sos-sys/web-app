@@ -14,6 +14,7 @@ const routes: Routes = [
     path: 'callback',
     component: CallbackComponent
   },
+  { path: 'teller', loadChildren: () => import('./teller/teller.module').then(m => m.TellerModule) },
   {
     path: '**',
     component: NotFoundComponent

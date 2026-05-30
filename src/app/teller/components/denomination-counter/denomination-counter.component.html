@@ -1,0 +1,40 @@
+<div class="denomination-card">
+  <div class="card-header">
+    <h3>{{ title }}</h3>
+  </div>
+  
+  <div class="card-body">
+    <form [formGroup]="form">
+      <table class="denomination-table">
+        <thead>
+          <tr>
+            <th>Denomination</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let denom of denominations">
+            <td class="denom-label">{{ denom | number }} XAF</td>
+            <td>
+              <input 
+                type="number" 
+                min="0" 
+                class="qty-input" 
+                [formControlName]="denom.toString()"
+                placeholder="0"
+              />
+            </td>
+            <td class="subtotal-cell">{{ getSubtotal(denom) | number }} XAF</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="grand-total-row">
+            <td colspan="2"><strong>Grand Total</strong></td>
+            <td class="grand-total-cell"><strong>{{ grandTotal | number }} XAF</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </form>
+  </div>
+</div>

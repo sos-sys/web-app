@@ -1,0 +1,42 @@
+<div>
+  <h2>Client Transaction</h2>
+  <p>Process a deposit or withdrawal for a client.</p>
+
+  <!-- Embed our Phase 2 Atomic Component -->
+  <div style="margin-bottom: 20px;">
+    <app-client-profile-card 
+      [clientName]="mockClient.name"
+      [accountNumber]="mockClient.account"
+      [signatureUrl]="mockClient.signature">
+    </app-client-profile-card>
+  </div>
+
+  <!-- Transaction Form -->
+  <div>
+    <h3>Transaction Details</h3>
+    
+    <div>
+      <label>
+        <input type="radio" name="txType" value="DEPOSIT" [(ngModel)]="transactionType"> Deposit
+      </label>
+      <label style="margin-left: 10px;">
+        <input type="radio" name="txType" value="WITHDRAWAL" [(ngModel)]="transactionType"> Withdrawal
+      </label>
+    </div>
+
+    <div style="margin-top: 10px;">
+      <label>Amount (XAF): </label>
+      <input type="number" min="0" [(ngModel)]="transactionAmount" placeholder="Enter amount">
+    </div>
+
+    <div style="margin-top: 20px;">
+      <p *ngIf="successMessage" style="color: green;"><strong>Success:</strong> {{ successMessage }}</p>
+
+      <button 
+        (click)="submitTransaction()" 
+        [disabled]="isLoading || transactionAmount <= 0">
+        {{ isLoading ? 'Processing...' : 'Submit ' + transactionType }}
+      </button>
+    </div>
+  </div>
+</div>

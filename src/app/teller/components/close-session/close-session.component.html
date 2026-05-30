@@ -1,0 +1,39 @@
+<div>
+  <h2>Close Cashier Session</h2>
+  <p>Count your final physical cash drawer to settle the shift.</p>
+
+  <!-- Embed our Phase 2 Atomic Component -->
+  <div *ngIf="!settlementResult">
+    <app-denomination-counter 
+      title="Final Physical Float Breakdown"
+      (totalChanged)="onTotalChanged($event)">
+    </app-denomination-counter>
+
+    <div style="margin-top: 20px;">
+      <p *ngIf="errorMessage" style="color: red;"><strong>Error:</strong> {{ errorMessage }}</p>
+      
+      <button 
+        (click)="closeSession()" 
+        [disabled]="isLoading || physicalTotal <= 0">
+        {{ isLoading ? 'Reconciling with Fineract...' : 'Settle Cash (' + physicalTotal + ' XAF)' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Reconciliation Results View -->
+  <div *ngIf="settlementResult" style="margin-top: 20px; padding: 10px; border: 1px solid black;">
+    <h3>Session Closed</h3>
+    <p><strong>Expected Fineract Balance:</strong> {{ settlementResult.expectedBalance }} XAF</p>
+    <p><strong>Actual Physical Balance:</strong> {{ settlementResult.actualBalance }} XAF</p>
+    
+    <p *ngIf="settlementResult.discrepancy === 0" style="color: green;">
+      <strong>Status:</strong> Perfect Match!
+    </p>
+    <p *ngIf="settlementResult.discrepancy > 0" style="color: blue;">
+      <strong>Status:</strong> Overage of {{ settlementResult.discrepancy }} XAF
+    </p>
+    <p *ngIf="settlementResult.discrepancy < 0" style="color: red;">
+      <strong>Status:</strong> Shortage of {{ settlementResult.discrepancy * -1 }} XAF
+    </p>
+  </div>
+</div>

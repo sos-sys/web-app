@@ -1,0 +1,24 @@
+<div>
+  <h1>Teller Workspace</h1>
+  
+  <p><strong>Status:</strong> 
+    <span [style.color]="sessionState ? 'green' : 'red'">
+      {{ sessionState ? 'SESSION OPEN (' + sessionState.teller?.name + ')' : 'NO ACTIVE SESSION' }}
+    </span>
+  </p>
+
+  <hr />
+
+  <!-- Navigation / Tabs (Only visible if Session is Open) -->
+  <div *ngIf="sessionState" style="margin-bottom: 20px;">
+    <button routerLink="workspace/transaction" routerLinkActive="active">Client Transaction</button>
+    <button routerLink="workspace/exchange" routerLinkActive="active">Currency Exchange</button>
+    <button routerLink="workspace/journal" routerLinkActive="active">Daily Journal</button>
+    <button routerLink="workspace/close" routerLinkActive="active">Close Session</button>
+  </div>
+
+  <!-- The "Views" (Routed Sub-Components) -->
+  <div style="border: 2px solid #ccc; padding: 20px;">
+    <router-outlet></router-outlet>
+  </div>
+</div>

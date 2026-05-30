@@ -1,0 +1,36 @@
+<div>
+  <h2>Currency Exchange</h2>
+  <p>Exchange large bills for smaller denominations. The net difference must be zero.</p>
+
+  <!-- Dual Embedded Counters -->
+  <div>
+    <app-denomination-counter 
+      title="Cash RECEIVED from Client (Cash In)"
+      (totalChanged)="onCashInChanged($event)">
+    </app-denomination-counter>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <app-denomination-counter 
+      title="Cash GIVEN to Client (Cash Out)"
+      (totalChanged)="onCashOutChanged($event)">
+    </app-denomination-counter>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <h3>Validation Status</h3>
+    <p><strong>Cash In:</strong> {{ cashInTotal }} XAF</p>
+    <p><strong>Cash Out:</strong> {{ cashOutTotal }} XAF</p>
+    <p [style.color]="netDifference === 0 ? 'green' : 'red'">
+      <strong>Net Difference:</strong> {{ netDifference }} XAF
+    </p>
+
+    <p *ngIf="successMessage" style="color: green;"><strong>Success:</strong> {{ successMessage }}</p>
+
+    <button 
+      (click)="submitExchange()" 
+      [disabled]="isLoading || !isValid">
+      {{ isLoading ? 'Processing...' : 'Process Exchange' }}
+    </button>
+  </div>
+</div>

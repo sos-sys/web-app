@@ -1,0 +1,38 @@
+<div>
+  <h2>Daily Journal</h2>
+  <p>Review all transactions processed during this session.</p>
+
+  <div *ngIf="isLoading">
+    <p>Loading journal data...</p>
+  </div>
+
+  <div *ngIf="errorMessage" style="color: red;">
+    <p><strong>Error:</strong> {{ errorMessage }}</p>
+  </div>
+
+  <table *ngIf="!isLoading && !errorMessage" border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Timestamp</th>
+        <th>Type</th>
+        <th>Amount (XAF)</th>
+        <th>Client Name</th>
+        <th>Account #</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="transactions.length === 0">
+        <td colspan="6" style="text-align: center;">No transactions found for this session.</td>
+      </tr>
+      <tr *ngFor="let tx of transactions">
+        <td>{{ tx.id }}</td>
+        <td>{{ tx.timestamp | date:'short' }}</td>
+        <td>{{ tx.type }}</td>
+        <td>{{ tx.amount | number }}</td>
+        <td>{{ tx.clientName || '-' }}</td>
+        <td>{{ tx.accountNumber || '-' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
