@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent {
-  public pin: string = '';
+  public username: string = '';
+  public password: string = '';
   public isLoading: boolean = false;
   public errorMessage: string | null = null;
 
@@ -19,12 +20,12 @@ export class AuthComponent {
   ) {}
 
   public doLogin(): void {
-    if (!this.pin) return;
+    if (!this.username || !this.password) return;
 
     this.isLoading = true;
     this.errorMessage = null;
 
-    this.tellerService.login(this.pin).subscribe({
+    this.tellerService.login(this.username, this.password).subscribe({
       next: (success) => {
         this.isLoading = false;
         if (success) {
@@ -34,7 +35,7 @@ export class AuthComponent {
       },
       error: () => {
         this.isLoading = false;
-        this.errorMessage = 'Invalid PIN or Authentication Failed.';
+        this.errorMessage = 'Incorrect username or password. Please try again.';
       }
     });
   }

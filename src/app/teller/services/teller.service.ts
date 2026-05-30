@@ -58,11 +58,11 @@ export class TellerService {
   /**
    * Simulates a teller authentication login.
    */
-  public login(pin: string): Observable<boolean> {
+  public login(username: string, password?: string): Observable<boolean> {
     return of(true).pipe(
       delay(800),
       tap(() => {
-        const user = { username: 'cashier_01', branch: 'Main Branch' };
+        const user = { username: username, branch: 'Main Branch' };
         sessionStorage.setItem('mifos_teller_auth', JSON.stringify(user));
         this.authenticatedUserSubject.next(user);
       })
